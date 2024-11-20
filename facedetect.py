@@ -30,6 +30,6 @@ for (x, y, w, h) in faces:
 
 # Display the output
 cv2.imshow('press any key to exit', img)
-cv2.imwrite('example.jpg',img)
+cv2.imwrite('example_out.jpg',img)
 cv2.waitKey(0) # blocks until a key is pressed when window is active.
 cv2.destroyAllWindows()
