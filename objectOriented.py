@@ -1,11 +1,15 @@
 #This will be a object oriented version of the virtual3d game.
-import cv2 
+import cv2
+
+class tunnel:
+    pass
 
 class faceFinder:
     """Uses Haar Cascade filter to detect largest face from a frame."""
-    def init(self):
-        self.face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    
+    def __init__(self):
         print("Face Finder initialize")
+        self.face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 
     def find_face(self, frame):
@@ -29,11 +33,38 @@ class faceFinder:
 #---------------------------------------------------------------------
 #Main
 #-----------------------------------------------------------------------
-
 print("Starting O.O Virtual3d")
 
 
 ff = faceFinder()
+cap = cv2.VideoCapture(cv2.CAP_ANY)
+
+if not cap.isOpened():
+    print("Couldn't open cam")
+    exit()
+
+
+
+
+while True:
+    retval, frame = cap.read()
+    if retval == False:
+        print("Camera error!")
+
+    ff.find_face(frame)
+    cv2.imshow('q to quit', frame)
+
+    if cv2.waitKey(30) == ord('q'):
+        break
+
+
+
+
+#pause = input('press enter to end')
+#destroy cam
+cap.release()
+
+cv2.destroyAllWindows()
 print("Virtual3d complete.")
 
 
