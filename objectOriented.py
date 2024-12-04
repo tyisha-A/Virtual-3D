@@ -84,10 +84,19 @@ class stage:
             cv2.line(img, (960+ int((600-960)*.3**2), 540),(ball0x,ball0y), (255,0,0),3)
             self.draw_target_xy(img, (ball0x, ball0y),35)
 
+            ball1x = 1000+ int((x - self.cam-w/2)*2*.2)
+            ball1y = 440
 
+            cv2.line(img, (960+ int((1200-960)*.3**2),540 - int((540-340)*.3**2)),(ball1x,ball1y),(255,0,0),3)
+            self.draw_target_xy(img, (ball1x, ball1y), 25)
 
+            ball2x = 1000+ int((x - self.cam-w/2)*2*.9)
+            ball2y = 650
 
+            cv2.line(img, (960+ int((1100-960)*.3**2),540 - int((540-650)*.3**2)),(ball2x,ball2y),(255,0,0),3)
+            self.draw_target_xy(img, (ball2x, ball2y), 50)
 
+        cv2.imshow("Tyisha's Game", img)
 
 #---------------------------------------------------------------------
 #Main
@@ -111,11 +120,13 @@ moved = False
 
 
 while True:
-    retval, frame = cap.read()
-    if retval == False:
-        print("Camera error!")
+    #Read the frame
+    ret, frame = cap.read()
+    # if frame is read correctly ret is True
+    if not ret:
+        print("Error reading frame!")
 
-    ff.find_face(frame)
+    facexy = ff.find_face(frame)
     cv2.imshow('q to quit', frame)
 
     if cv2.waitKey(30) == ord('q'):
