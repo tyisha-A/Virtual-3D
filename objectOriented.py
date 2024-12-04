@@ -34,7 +34,7 @@ class faceFinder:
 
 
 
-class stage:
+class Stage:
     """Initialized with display size, draws background grid based on position"""
     def __init__(self):
         self.disp_h = 0
@@ -84,13 +84,13 @@ class stage:
             cv2.line(img, (960+ int((600-960)*.3**2), 540),(ball0x,ball0y), (255,0,0),3)
             self.draw_target_xy(img, (ball0x, ball0y),35)
 
-            ball1x = 1000+ int((x - self.cam-w/2)*2*.2)
+            ball1x = 1000+ int((x - self.cam_w/2)*2*.2)
             ball1y = 440
 
             cv2.line(img, (960+ int((1200-960)*.3**2),540 - int((540-340)*.3**2)),(ball1x,ball1y),(255,0,0),3)
             self.draw_target_xy(img, (ball1x, ball1y), 25)
 
-            ball2x = 1000+ int((x - self.cam-w/2)*2*.9)
+            ball2x = 1000+ int((x - self.cam_w/2)*2*.9)
             ball2y = 650
 
             cv2.line(img, (960+ int((1100-960)*.3**2),540 - int((540-650)*.3**2)),(ball2x,ball2y),(255,0,0),3)
@@ -106,7 +106,7 @@ print("Starting O.O Virtual3d")
 #create facefinder instance to find the x,y value of the largest face
 ff = faceFinder()
 
-#stage = Stage()
+stage = Stage()
 img = np.zeros([1080,1920,3])
 cv2.imshow("Tyisha's Game", img)
 #create cam
@@ -127,16 +127,22 @@ while True:
         print("Error reading frame!")
 
     facexy = ff.find_face(frame)
-    cv2.imshow('q to quit', frame)
+    frame_small = cv2.resize(frame, (frame.shape[1]//4, frame.shape[0]//4), 
+        interpolation= cv2.INTER_LINEAR)
 
+    cv2.imshow('q to quit', frame_small)
+    if not moved:
+        cv2.moveWindow('q to quit',1080,0)
+        moved = True
+    #If face is not detected, update the stage
+    if facexy is not None:
+        pass
+        img = stage.update(facexy)
+    # Stop if q key is pressed
     if cv2.waitKey(30) == ord('q'):
         break
 
-
-
-
-#pause = input('press enter to end')
-#destroy cam
+#Release the VideoCapture object
 cap.release()
 
 cv2.destroyAllWindows()
