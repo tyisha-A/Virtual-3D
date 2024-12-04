@@ -1,5 +1,6 @@
 #This will be a object oriented version of the virtual3d game.
 import cv2
+import numpy as np
 
 class tunnel:
     pass
@@ -30,20 +31,83 @@ class faceFinder:
         cv2.rectangle(frame, (bx, by), (bx+bw, by+bh), (0, 255, 255), 3)
         return ((bx+bw)/2, (by+bh)/2)
 
+
+
+
+class stage:
+    """Initialized with display size, draws background grid based on position"""
+    def __init__(self):
+        self.disp_h = 0
+        self.disp_w = 0
+        self.cam_h = 720
+        self.cam_w = 1280
+        #Saving x between fames
+        self.save_x = 960
+
+    #Draws bullseye pattern on image (pos gives circle position, size gives cricle radius)
+    def draw_target_xy(self, img, pos, size):
+        cv2.circle(img, pos, size, (0, 0, 255), -1)
+        cv2.circle(img, pos, int(size*.8), (255, 255, 255), -1)
+        cv2.circle(img, pos, int(size*.6), (0, 0, 255), -1)
+        cv2.circle(img, pos, int(size*.4), (255, 255, 255), -1)
+        cv2.circle(img, pos, int(size*.2), (0, 0, 255), -1)
+
+
+    #Draws a target with its pos and size relative to users position (parallax to users position)
+    def draw_targetz(self,pos,facexy):
+        tx,ty,tz = pos
+        cv2.circle(img, (ball0x, ball0y), 50, (255,0,0),-1)
+        cv2.line(img,(960+ int((600-960)*.3**2), 540),(ball0x, ball0y),(255,0,0),3)
+
+
+    #Redraws/Rerenders the screen
+    def update(self, facexy):
+        x, y = facexy
+        e = .9 # smoothing constant
+        x = e * x + (1-e)*self.save_x
+        self.save_x = x
+        img = np.zeros([1080,1920,3])
+        decay = .3
+        sx = sy = 0
+        dx = int((x - self.cam_w/2)*2)
+        #Draw 6 targets trailing lines
+        for i in range(1,7):
+            sx = sx + int((960-sx)*decay)
+            sy = sy + int((540-sy)*decay)
+            dx = int(dx * decay)
+            #print(sx,sy)
+            cv2.rectangle(img, (sx+dx, sy), (1920-sx+dx, 1080-sy), (255,255,255), 1)
+
+            ball0x = 600+ int((x - self.cam_w/2)*2*.6)
+            ball0y = 540
+
+            cv2.line(img, (960+ int((600-960)*.3**2), 540),(ball0x,ball0y), (255,0,0),3)
+            self.draw_target_xy(img, (ball0x, ball0y),35)
+
+
+
+
+
+
 #---------------------------------------------------------------------
 #Main
 #-----------------------------------------------------------------------
 print("Starting O.O Virtual3d")
 
-
+#create facefinder instance to find the x,y value of the largest face
 ff = faceFinder()
+
+#stage = Stage()
+img = np.zeros([1080,1920,3])
+cv2.imshow("Tyisha's Game", img)
+#create cam
 cap = cv2.VideoCapture(cv2.CAP_ANY)
 
 if not cap.isOpened():
     print("Couldn't open cam")
     exit()
 
-
+moved = False
 
 
 while True:
